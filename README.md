@@ -2,7 +2,7 @@
 
 ## Solution Overview ##
 When I saw the exercise I remember of "Travelling Salesman Problem", and I saw that already exist on pip library. 
-Another important point that how is a small input I decided to use Brute Force algorithm. 
+Another important point that input data is small and I decided to use Brute Force algorithm. 
 
 ## How to execute ##
 The solution was developed with python 3.7. 
@@ -12,7 +12,7 @@ First of all the code was saved in github on:
 $ git clone git@github.com:gpsanches/rota-viagens.git
 ```
 
-To Execute the program follow the steps:
+To execute the program follow the steps:
 
 ```bash
 $ virtualenv venv -p python3
@@ -20,7 +20,12 @@ $ source venv/bin/activate
 $ pip install -r requeriments.txt
 $ python find_route.py
 ```
+To execute tests:
 
+```bash 
+$ python -m unittest tests.py
+``` 
+-------------------------------------------------------------------
 ## Problem ##
 
 Um turista deseja viajar pelo mundo pagando o menor preço possível independentemente do número de conexões necessárias.

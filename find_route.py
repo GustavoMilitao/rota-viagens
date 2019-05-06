@@ -18,15 +18,19 @@ class FindRoute:
     def __init__(self, _origin, _destination, _filename=DEFAULT_CSVFILE):
         self.origin = _origin
         self.destination = _destination
-        self.df = self.generate_matrix(_filename)
-        self.ordering_dataframe()
+        self.df = FindRoute.generate_matrix(_filename)
+        self.normalize_dataframe()
 
-    def generate_matrix(self, csvfilename):
-        with open(csvfilename) as csvfile:
-            df = pd.read_csv(csvfile, usecols=[0, 1, 2], names=['A', 'B', 'C'])
-        return pd.pivot_table(df, index='A', columns='B', values='C')
+    @staticmethod
+    def generate_matrix(csvfilename):
+        try:
+            with open(csvfilename) as csvfile:
+                df = pd.read_csv(csvfile, usecols=[0, 1, 2], names=['A', 'B', 'C'])
+            return pd.pivot_table(df, index='A', columns='B', values='C')
+        except Exception as e:
+            raise
 
-    def ordering_dataframe(self):
+    def normalize_dataframe(self):
         rows = self.df.index
         columns = self.df.columns
 
@@ -42,7 +46,7 @@ class FindRoute:
         self.df = self.df.sort_index()
 
     def generate_routes(self):
-        # change naN (file input not have route) to a bigger number to not influence in better way
+        # changing naN (that file input not have route) to a bigger number to not influence in better way
         mat = self.df.fillna(10000).values
 
         return solve_tsp(mat, endpoints=(self.get_position_by_name(self.origin),
@@ -83,8 +87,12 @@ class FindRoute:
 
 if __name__ == '__main__':
     filename = input("Enter filename csv (case None default is {}): ".format(DEFAULT_CSVFILE)) or 'input-routes.csv'
-    origin = input("Enter origin point: ") or 'GRU'
-    destination = input("Enter destination point: ") or 'CDG'
+    origin = str(input("Enter origin point (required): ")).upper()
+    destination = str(input("Enter destination point (required): ")).upper()
+
+    if not origin or not destination:
+        raise Exception("Origin and destination are required!")
+
     solution = FindRoute(origin, destination, filename)
     result = solution.main()
     print("The better route is: {} with price: {}".format(result.get('route', None), result.get('price', None)))
